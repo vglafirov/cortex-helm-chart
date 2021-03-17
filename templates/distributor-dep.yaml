@@ -59,9 +59,9 @@ spec:
           args:
             - "-target=distributor"
             - "-config.file=/etc/cortex/cortex.yaml"
-          {{- range $key, $value := .Values.distributor.extraArgs }}
-            - "-{{ $key }}={{ $value }}"
-          {{- end }}
+            {{- if .Values.distributor.extraArgs }}
+              {{- toYaml .Values.distributor.extraArgs | nindent 12 }}
+            {{- end }}
           volumeMounts:
             {{- if .Values.distributor.extraVolumeMounts }}
               {{ toYaml .Values.distributor.extraVolumeMounts | nindent 12}}
