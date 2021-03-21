@@ -18,7 +18,7 @@ spec:
       app: {{ template "cortex.name" . }}-store-gateway
       release: {{ .Release.Name }}
   updateStrategy:
-    {{- toYaml .Values.store_gateway.strategy | nindent 4 }}      
+    {{- toYaml .Values.store_gateway.strategy | nindent 4 }}
   serviceName: {{ template "cortex.fullname" . }}-store-gateway-headless
   {{- if .Values.store_gateway.persistentVolume.enabled }}
   volumeClaimTemplates:
@@ -109,9 +109,9 @@ spec:
             - "-target=store-gateway"
             - "-config.file=/etc/cortex/cortex.yaml"
             {{- include "cortex.memcached" . | nindent 12}}
-            {{- range $key, $value := .Values.store_gateway.extraArgs }}
-            - "-{{ $key }}={{ $value }}"
-            {{- end }}
+          {{- if .Values.store_gateway.extraArgs }}
+            {{- toYaml .Values.store_gateway.extraArgs | nindent 12 }}
+          {{- end }}
           volumeMounts:
             {{- if .Values.store_gateway.extraVolumeMounts }}
             {{ toYaml .Values.store_gateway.extraVolumeMounts | nindent 12}}
@@ -121,7 +121,7 @@ spec:
             - name: storage
               mountPath: "/data"
               {{- if .Values.store_gateway.persistentVolume.subPath }}
-              subPath: {{ .Values.store_gateway.persistentVolume.subPath }}             
+              subPath: {{ .Values.store_gateway.persistentVolume.subPath }}
               {{- end }}
           ports:
             - name: http-metrics
@@ -129,7 +129,7 @@ spec:
               protocol: TCP
             - name: grpc
               containerPort: {{ .Values.config.server.grpc_listen_port }}
-              protocol: TCP            
+              protocol: TCP
           livenessProbe:
             {{- toYaml .Values.store_gateway.livenessProbe | nindent 12 }}
           readinessProbe:

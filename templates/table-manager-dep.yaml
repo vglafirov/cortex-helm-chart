@@ -60,8 +60,8 @@ spec:
           args:
             - "-target=table-manager"
             - "-config.file=/etc/cortex/cortex.yaml"
-          {{- range $key, $value := .Values.table_manager.extraArgs }}
-            - "-{{ $key }}={{ $value }}"
+          {{- if .Values.table_manager.extraArgs }}
+            {{- toYaml .Values.table_manager.extraArgs | nindent 12 }}
           {{- end }}
           volumeMounts:
             {{- if .Values.table_manager.extraVolumeMounts }}

@@ -115,8 +115,8 @@ spec:
             - -cluster.peer={{ template "cortex.fullname" $ }}-alertmanager-{{ $n }}.{{ template "cortex.fullname" $ }}-alertmanager-headless.{{ $.Release.Namespace }}.svc.{{ $.Values.clusterDomain }}:{{ $clusterPort }}
             {{- end }}
             {{- end }}
-            {{- range $key, $value := .Values.alertmanager.extraArgs }}
-            - "-{{ $key }}={{ $value }}"
+            {{- if .Values.alertmanager.extraArgs }}
+              {{- toYaml .Values.alertmanager.extraArgs | nindent 12 }}
             {{- end }}
           volumeMounts:
             {{- if .Values.alertmanager.extraVolumeMounts }}

@@ -61,9 +61,9 @@ spec:
             - "-target=alertmanager"
             - "-config.file=/etc/cortex/cortex.yaml"
             - "-alertmanager.configs.url=http://{{ template "cortex.fullname" . }}-configs.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}:{{ .Values.config.server.http_listen_port }}"
-          {{- range $key, $value := .Values.alertmanager.extraArgs }}
-            - "-{{ $key }}={{ $value }}"
-          {{- end }}
+            {{- if .Values.alertmanager.extraArgs }}
+              {{- toYaml .Values.alertmanager.extraArgs | nindent 12 }}
+            {{- end }}
           volumeMounts:
             {{- if .Values.alertmanager.extraVolumeMounts }}
               {{ toYaml .Values.alertmanager.extraVolumeMounts | nindent 12}}

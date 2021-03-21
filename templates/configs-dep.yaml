@@ -66,9 +66,9 @@ spec:
             {{- else }}
             - "-configs.database.uri=memory://"
             {{- end }}
-          {{- range $key, $value := .Values.configs.extraArgs }}
-            - "-{{ $key }}={{ $value }}"
-          {{- end }}
+            {{- if .Values.configs.extraArgs }}
+              {{- toYaml .Values.configs.extraArgs | nindent 12 }}
+            {{- end }}
           volumeMounts:
             - name: config
               mountPath: /etc/cortex
